@@ -1,29 +1,34 @@
 const { execSync } = require('child_process');
 
-let currentCommit = 0;
-const maxCommits = execSync('git rev-list --count HEAD').toString().trim();
-console.log('maxCommits:', maxCommits);
+let currentCommitHash = '';
+let maxCommits = '';
 
-// function getNextCommit() {
-//   currentCommit++;
-//   if (currentCommit > maxCommits) {
-//     currentCommit = 1;
-//   }
-//   return currentCommit;
-// }
+function getMaxCommits() {
+  maxCommits = execSync('git rev-list --count HEAD').toString().trim();
+}
 
-// function runCommand(command) {
-//   console.log(`Running command: ${command}`);
-//   execSync(command, { stdio: 'inherit' });
-// }
+function getNextCommitHash() {
+  const nextCommitHash = execSync(`git rev-list --reverse HEAD | awk "NR == ${currentCommitHash ? currentCommitHash + 1 : 1}"`).toString().trim();
+  return nextCommitHash;
+}
 
-// function switchToCommit(commit) {
-//   runCommand(`git checkout ${commit}`);
-// }
+function runCommand(command) {
+  console.log(`Running command: ${command}`);
+  execSync(command, { stdio: 'inherit' });
+}
 
-// function getNext() {
-//   const nextCommit = getNextCommit();
-//   switchToCommit(nextCommit);
-// }
+function switchToCommit(commitHash) {
+  runCommand(`git checkout ${commitHash}`);
+}
 
-// getNext();
+function getNext() {
+  const nextCommitHash = getNextCommitHash();
+  switchToCommit(nextCommitHash);
+  currentCommitHash = nextCommitHash;
+  if (currentCommitHash === '') {
+    currentCommitHash = getNextCommitHash();
+  }
+}
+
+getMaxCommits();
+getNext();
