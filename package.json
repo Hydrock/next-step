@@ -1,0 +1,11 @@
+{
+  "name": "next-step",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Hydrock/next-step.git",
+  "author": "Вечканов Алексей <avechkanov@alfabank.ru>",
+  "license": "MIT",
+  "scripts": {
+    "next": "node ./scripts/next-commit.js"
+  }
+}
